@@ -9,39 +9,14 @@
 
 #define LEN 80
 //find min
-#define MIN2 (a, b) ( (a) < (b) ? (a) : (b) )
-#define MIN3 (a, b, c) MIN2 (MIN2 (a, b), MIN2 (c, b))
+#define MIN2(a, b) ( (a) < (b) ? (a) : (b) )
+#define MIN3(a, b, c) MIN2 (MIN2 (a, b), MIN2 (c, b))
 
 
 //def of func's
 int Levenshtein (const char*, const char*, const unsigned int, const unsigned int);
 int get_strings (char**, char**);
 
-//main()
-int main(void)
-{
-    char* ptr_str_1 = NULL,
-        * ptr_str_2 = NULL;
-
-    if(get_strings(&ptr_str_1, &ptr_str_2))
-    {
-        printf("Problem!");
-        return -10;
-    }
-
-    unsigned int str_1_len = strlen(ptr_str_1); //pattern
-    unsigned int str_2_len = strlen(ptr_str_2); //data
-    realloc (ptr_str_1, str_1_len);
-    realloc (ptr_str_2, str_2_len);
-    printf("%s\n%s\n", ptr_str_1, ptr_str_2);
-
-    Levenshtein(ptr_str_1, ptr_str_2, str_1_len, str_2_len);
-
-    free(ptr_str_1);
-    free(ptr_str_2);
-
-    return 0;
-}
 
 //get_strings Definition
 int get_strings (char** ptr_str_1, char** ptr_str_2)
@@ -118,3 +93,29 @@ int Levenshtein (const char* str_1, const char* str_2, const unsigned int str_1_
     return 0;
 }
 
+
+//main()
+int main(void)
+{
+    char* ptr_str_1 = NULL,
+        * ptr_str_2 = NULL;
+
+    if(get_strings(&ptr_str_1, &ptr_str_2))
+    {
+        printf("Problem!");
+        return -10;
+    }
+
+    unsigned int str_1_len = strlen(ptr_str_1); //pattern
+    unsigned int str_2_len = strlen(ptr_str_2); //data
+    realloc (ptr_str_1, str_1_len);
+    realloc (ptr_str_2, str_2_len);
+    printf("%s\n%s\n", ptr_str_1, ptr_str_2);
+
+    Levenshtein(ptr_str_1, ptr_str_2, str_1_len, str_2_len);
+
+    free(ptr_str_1);
+    free(ptr_str_2);
+
+    return 0;
+}
