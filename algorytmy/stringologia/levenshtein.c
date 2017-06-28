@@ -110,8 +110,8 @@ int main(void)
 
     unsigned int str_1_len = strlen(ptr_str_1); //pattern
     unsigned int str_2_len = strlen(ptr_str_2); //data
-    realloc (ptr_str_1, str_1_len);
-    realloc (ptr_str_2, str_2_len);
+    ptr_str_1 = realloc (ptr_str_1, str_1_len);
+    ptr_str_2 = realloc (ptr_str_2, str_2_len);
     printf("%s\n%s\n", ptr_str_1, ptr_str_2);
 
     lev = Levenshtein(ptr_str_1, ptr_str_2, str_1_len, str_2_len);
