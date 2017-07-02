@@ -1,6 +1,5 @@
 #include "Huffman.h"
 
-
 huff_node* create_huff_node(float freq, char sym, huff_node * l, huff_node * r)
 {
 	huff_node* new_node = (huff_node*)malloc(sizeof(huff_node));
@@ -66,6 +65,7 @@ huff_node* create_tree_from_table(huff_table* table)
 	{
 		binary_heap* heap = create_heap_from_huff_table(table);
 		root = create_tree_from_heap(heap);
+		free_heap(heap, NULL);
 	}
 	return root;
 }
@@ -124,7 +124,7 @@ char* get_string_code_for_symbol(huff_node* tree, char symbol)
 	unsigned char code = 0;
 	//unsigned char* code = (unsigned char*)calloc(1, sizeof(unsigned char));
 	unsigned char length = get_code_for_symbol(tree, &code, 0, symbol);
-	char* str_code = (char*)malloc((length+1) * sizeof(char));
+	char* str_code = (char*)malloc((length + 1) * sizeof(char));
 
 	for (int i = 0; i < length; ++i)
 	{
@@ -149,12 +149,10 @@ codes_table* get_codes(huff_node* tree, huff_table* table)
 	return codes;
 }
 
-
 void encode_to_file(char* data, size_t data_size, char* file_name)
 {
 	huff_table* table = create_huff_table_from_data(data, data_size);
 	huff_node* tree = create_tree_from_table(table);
-
 
 	if (tree != NULL && table != NULL && file_name != NULL && strlen(file_name))
 	{
@@ -163,7 +161,7 @@ void encode_to_file(char* data, size_t data_size, char* file_name)
 		size_t coded_data_size = 0;
 		for (int i = 0; i < table->size; ++i)
 		{
-			coded_data_size += codes->length[i] * (table->symbol_frequencies[i]*data_size);
+			coded_data_size += codes->length[i] * (table->symbol_frequencies[i] * data_size);
 		}
 
 		coded_data_size += 8 - coded_data_size % 8; //CEIL BITS TO BYTES COUNT
@@ -219,7 +217,6 @@ void encode_to_file(char* data, size_t data_size, char* file_name)
 	}
 }
 
-
 char* decode_from_file(char* file_name)
 {
 	char* orig_data = NULL;
@@ -239,13 +236,11 @@ char* decode_from_file(char* file_name)
 		fread(&orig_data_size, sizeof(size_t), 1, file);
 		orig_data = (char*)malloc((orig_data_size + 1) * sizeof(char));
 
-
 		size_t coded_data_size;
 		fread(&coded_data_size, sizeof(size_t), 1, file);
 
 		unsigned char* coded_data = (unsigned char*)malloc(coded_data_size * sizeof(unsigned char));
 		fread(coded_data, sizeof(unsigned char), coded_data_size, file);
-
 
 		size_t coded_char_index = coded_data_size - 1;
 		size_t coded_bit_index = 0;
@@ -276,18 +271,15 @@ char* decode_from_file(char* file_name)
 				if (coded_char_index == 0 && orig_data_index == orig_data_size)
 					break; //Because the last bits is for complection so we stoped here.
 			}
-
 		} while (coded_char_index >= 0);
 		orig_data[orig_data_index] = '\0';
 
 		free_huff_node(tree);
 		free_huff_table(table);
 		free(coded_data);
-
 	}
 	return orig_data;
 }
-
 
 huff_node* create_huff_tree(char * data, size_t data_size)
 {

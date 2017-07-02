@@ -59,11 +59,16 @@ heap_node* get_child_node(binary_heap* heap, size_t i, size_t(*index_func)(size_
 
 binary_heap* create_binary_heap(int capacity, int(*compare_nodes_func)(heap_node*, heap_node*))
 {
-	binary_heap* new_heap = (binary_heap*)malloc(sizeof(binary_heap));
-	new_heap->size = 0;
-	new_heap->capacity = capacity > 0 ? capacity : 4;
-	new_heap->heap = (heap_node**)calloc(new_heap->capacity, sizeof(heap_node));
-	new_heap->compare_nodes = compare_nodes_func;
+
+	binary_heap* new_heap = NULL;
+	if (compare_nodes_func != NULL)
+	{
+		new_heap = (binary_heap*)malloc(sizeof(binary_heap));
+		new_heap->size = 0;
+		new_heap->capacity = capacity > 0 ? capacity : 4;
+		new_heap->heap = (heap_node**)calloc(new_heap->capacity, sizeof(heap_node));
+		new_heap->compare_nodes = compare_nodes_func;
+	}
 	return new_heap;
 }
 
@@ -162,13 +167,16 @@ void* pop(binary_heap* heap)
 	return data;
 }
 
-void free_heap(binary_heap* heap, void(*node_deleter)(heap_node* node))
+void free_heap(binary_heap* heap, void(*node_data_deleter)(heap_node* node))
 {
 	size_t size = heap->size;
 
 	for (size_t i = 0; i < size; ++i)
 	{
-		node_deleter(heap->heap[i]);
+		if (node_data_deleter != NULL)
+		{
+			node_data_deleter(heap->heap[i]);
+		}
 		free(heap->heap[i]);
 	}
 	free(heap->heap);
